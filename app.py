@@ -17,6 +17,7 @@ login(token=HF_TOKEN)
 # Load DreamBooth + ControlNet model pipeline
 @st.cache_resource(show_spinner=True)
 def load_pipeline():
+    from diffusers import StableDiffusionPipeline
     device = "cuda" if torch.cuda.is_available() else "cpu"
     dtype = torch.float16 if device == "cuda" else torch.float32
 
