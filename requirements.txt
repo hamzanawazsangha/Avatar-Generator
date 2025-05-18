@@ -1,9 +1,8 @@
 streamlit
-torch
-torchvision
-diffusers
-huggingface_hub
-transformers
+torch==2.0.1
+diffusers==0.27.2
+transformers==4.38.2
+huggingface_hub==0.20.3
 opencv-python-headless==4.9.0.80
-numpy
+numpy<2.0
 Pillow
