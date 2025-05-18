@@ -23,12 +23,11 @@ def load_pipeline():
     controlnet = ControlNetModel.from_pretrained(
         "lllyasviel/sd-controlnet-canny", torch_dtype=dtype
     )
-
-    pipe = StableDiffusionControlNetPipeline.from_pretrained(
-        "HamzaNawaz17/finetuned_dreambooth",  # ✅ Your fine-tuned model on HF Hub
-        controlnet=controlnet,
-        torch_dtype=dtype,
-    )
+    pipe = StableDiffusionPipeline.from_pretrained(
+        "CompVis/stable-diffusion-v1-4", 
+        torch_dtype=torch.float16
+    ).to("cuda" if torch.cuda.is_available() else "cpu")
+    
     pipe.scheduler = UniPCMultistepScheduler.from_config(pipe.scheduler.config)
     pipe.to(device)
     return pipe
