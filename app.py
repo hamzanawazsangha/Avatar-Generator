@@ -9,26 +9,25 @@ from diffusers import StableDiffusionControlNetPipeline, ControlNetModel, UniPCM
 # ------------------------------
 # Hugging Face Token from Streamlit secrets
 HF_TOKEN = st.secrets["HF_TOKEN"]
-
-# Login to Hugging Face
 login(token=HF_TOKEN)
 
 # ------------------------------
 # Load DreamBooth + ControlNet model pipeline
 @st.cache_resource(show_spinner=True)
 def load_pipeline():
-    from diffusers import StableDiffusionPipeline
     device = "cuda" if torch.cuda.is_available() else "cpu"
     dtype = torch.float16 if device == "cuda" else torch.float32
 
     controlnet = ControlNetModel.from_pretrained(
         "lllyasviel/sd-controlnet-canny", torch_dtype=dtype
     )
-    pipe = StableDiffusionPipeline.from_pretrained(
-        "CompVis/stable-diffusion-v1-4", 
-        torch_dtype=torch.float16
-    ).to("cuda" if torch.cuda.is_available() else "cpu")
-    
+
+    pipe = StableDiffusionControlNetPipeline.from_pretrained(
+        "runwayml/stable-diffusion-v1-5",
+        controlnet=controlnet,
+        torch_dtype=dtype
+    )
+
     pipe.scheduler = UniPCMultistepScheduler.from_config(pipe.scheduler.config)
     pipe.to(device)
     return pipe
